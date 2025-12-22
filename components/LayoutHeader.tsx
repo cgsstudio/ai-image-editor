@@ -8,9 +8,17 @@ export default function LayoutHeader() {
             </div>
             <div className="flex items-center gap-8">
                 <a href="#" className="text-sm font-medium text-gray-600 hover:text-black">About</a>
-                <button className="px-5 py-2 rounded-xl border border-blue-500 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-colors">
-                    Try Free
-                </button>
+                <div className="flex items-center gap-3">
+                    <button className="px-5 py-2 rounded-xl border border-blue-500 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-colors">
+                        Try Free
+                    </button>
+                    <a
+                        href="/code-generator"
+                        className="px-5 py-2 rounded-xl bg-black text-white text-sm font-medium hover:bg-gray-900 transition-colors"
+                    >
+                        Code Generator
+                    </a>
+                </div>
             </div>
         </header>
     );
