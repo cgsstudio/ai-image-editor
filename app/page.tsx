@@ -169,7 +169,7 @@ export default function Home() {
             </span>
           </div>
           <div>
-            <p className={`mt-6 text-xs transition-colors duration-200 ${
+            <p className={`mt-6 text-sm transition-colors duration-200 ${
               isDark ? "text-gray-400" : "text-gray-500"
             }`}>
               Chameleo AI is designed for deep research, fast content creation, and easy code generation. Powered by Chameleo GFX Studio, it delivers accurate and high-quality results that help users think, create, and build faster across both creative and technical tasks.
