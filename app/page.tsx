@@ -249,7 +249,7 @@ export default function Home() {
                   {m.role === "assistant" && (
                     <button
                       onClick={() => handleCopy(m.content)}
-                      className={`absolute top-2 right-2 text-xs transition-colors duration-200 ${
+                      className={`absolute top-0 right-2 text-xs transition-colors duration-200 ${
                         isDark 
                           ? "text-gray-400 hover:text-gray-200" 
                           : "text-gray-500 hover:text-gray-800"
