@@ -232,8 +232,8 @@ export default function Home() {
             <p className={`text-[11px] transition-colors duration-200 ${
               isDark ? "text-gray-500" : "text-gray-400"
             }`}>
-              Tip: Ask for "Next.js API route with TypeScript", "SEO‑optimized
-              blog intro", or "explain this piece of code".
+              Tip: Ask for &quot;Next.js API route with TypeScript&quot;, &quot;SEO‑optimized
+              blog intro&quot;, or &quot;explain this piece of code&quot;.
             </p>
           </div>
         </div>
