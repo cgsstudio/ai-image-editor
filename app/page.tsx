@@ -151,8 +151,8 @@ export default function Home() {
           <IoClose size={24} />
         </button>
 
-        <div className="p-4">
-          <div className="flex items-center gap-3">
+        <div className="p-4 flex flex-col h-full">
+          <div className="flex flex-col gap-3">
             <div className="w-8 h-8 flex items-center justify-center">
               <Image
                 src={Logo}
@@ -165,9 +165,20 @@ export default function Home() {
             <span className={`font-semibold text-sm transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
-              Chameleo AI Assistant
+              ChamAI 
             </span>
           </div>
+          <div>
+            <p className={`mt-6 text-xs transition-colors duration-200 ${
+              isDark ? "text-gray-400" : "text-gray-500"
+            }`}>
+              Chameleo AI is designed for deep research, fast content creation, and easy code generation. Powered by Chameleo GFX Studio, it delivers accurate and high-quality results that help users think, create, and build faster across both creative and technical tasks.
+            </p>
+          </div>
+              <div className="mt-auto pt-8 text-center border-t border-gray-100">
+                <p className="text-xs text-gray-400 mb-1">© Copyright 2025</p>
+                <p className="text-xs text-gray-400">Powered by <a href="https://chameleogfxstudio.com/" className="hover:text-[#ed1d24]">chemeloeGFXstudio</a></p>
+            </div>
         </div>
       </aside>
 
@@ -191,7 +202,7 @@ export default function Home() {
             <h1 className={`text-sm lg:text-lg font-semibold transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
-              Chat with AI & Generate Content or Code
+              Transform Ideas into Content or Code with AI 
             </h1>
           </div>
           

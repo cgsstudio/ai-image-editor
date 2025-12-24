@@ -75,6 +75,11 @@ export default function ToolsPanel() {
                     Try Another Tool
                 </button>
             </div>
+
+            <div className="mt-auto pt-8 text-center border-t border-gray-100">
+                <p className="text-xs text-gray-400 mb-1">© Copyright 2025</p>
+                <p className="text-xs text-gray-400">Powered by chemeloeGFXstudio</p>
+            </div>
         </div>
     );
 }
