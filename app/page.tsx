@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { IoSend } from "react-icons/io5";
+import { IoSend, IoMenu, IoClose } from "react-icons/io5";
 import Image from "next/image";
 import Logo from "../assest/images/logo-2.svg";
 
@@ -17,22 +17,24 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [copyError, setCopyError] = useState<string | null>(null);
   const [isDark, setIsDark] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme = window.localStorage?.getItem("theme");
     if (savedTheme) {
       setIsDark(savedTheme === "dark");
     } else {
-      // Check system preference
       setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
     }
   }, []);
 
   useEffect(() => {
-    // Save theme preference to localStorage
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-    // Apply theme to document
+    try {
+      window.localStorage?.setItem("theme", isDark ? "dark" : "light");
+    } catch (e) {
+      console.log("LocalStorage not available");
+    }
+    
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
@@ -42,6 +44,10 @@ export default function Home() {
 
   const toggleTheme = () => {
     setIsDark(!isDark);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const handleSend = async () => {
@@ -121,10 +127,30 @@ export default function Home() {
     <main className={`min-h-screen flex transition-colors duration-200 ${
       isDark ? "bg-[#000000]" : "bg-white"
     }`}>
-      {/* Left Sidebar */}
-      <aside className={`w-64 flex-shrink-0 flex flex-col border-r transition-colors duration-200 sticky top-0 h-screen ${
+      {/* Mobile & Tablet Backdrop */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar - Hidden on mobile/tablet, overlay when open */}
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-64 flex-shrink-0 flex flex-col border-r transition-all duration-300 z-50 ${
         isDark ? "bg-[#171717] border-gray-800" : "bg-gray-50 border-gray-200"
-      }`}>
+      } ${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } lg:translate-x-0`}>
+        {/* Close button for mobile/tablet */}
+        <button
+          onClick={toggleSidebar}
+          className={`lg:hidden absolute top-4 right-4 p-2 rounded-lg ${
+            isDark ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-gray-900"
+          }`}
+        >
+          <IoClose size={24} />
+        </button>
+
         <div className="p-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 flex items-center justify-center">
@@ -145,19 +171,30 @@ export default function Home() {
         </div>
       </aside>
 
-      {/* Main Content Area - Full Width */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* Chat Area Header */}
-
-                  
-        <header className={`sticky top-0 z-30 w-full py-4 px-6 border-b flex items-center justify-between transition-colors duration-200 ${
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-h-screen w-full lg:w-auto">
+        {/* Header */}
+        <header className={`sticky top-0 z-30 w-full py-3 lg:py-4 px-4 lg:px-6 border-b flex items-center justify-between transition-colors duration-200 ${
           isDark ? "bg-[#171717] border-gray-800" : "bg-white border-gray-200"
         }`}>
-          <h1 className={`text-lg font-semibold transition-colors duration-200 ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}>
-            Chat with AI & Generate Content or Code
-          </h1>
+          <div className="flex items-center gap-3">
+            {/* Mobile/Tablet menu button */}
+            <button
+              onClick={toggleSidebar}
+              className={`lg:hidden p-2 rounded-lg ${
+                isDark ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              <IoMenu size={24} />
+            </button>
+            
+            <h1 className={`text-sm lg:text-lg font-semibold transition-colors duration-200 ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}>
+              Chat with AI & Generate Content or Code
+            </h1>
+          </div>
+          
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
@@ -171,19 +208,19 @@ export default function Home() {
           </button>
         </header>
 
-        {/* Messages Area - Scrollable */}
-        <div className={`flex-1 overflow-y-auto px-6 py-8 pb-32 transition-colors duration-200 ${
+        {/* Messages Area */}
+        <div className={`flex-1 overflow-y-auto px-4 lg:px-6 py-6 lg:py-8 pb-32 lg:pb-32 transition-colors duration-200 ${
           isDark ? "bg-[#0f0f0f]" : "bg-white"
         }`}>
           {messages.length === 0 && (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <h2 className={`text-2xl font-bold mb-2 transition-colors duration-200 ${
+              <div className="text-center px-4">
+                <h2 className={`text-xl lg:text-2xl font-bold mb-2 transition-colors duration-200 ${
                   isDark ? "text-white" : "text-gray-900"
                 }`}>
                   Where should we begin?
                 </h2>
-                <p className={`text-sm transition-colors duration-200 ${
+                <p className={`text-xs lg:text-sm transition-colors duration-200 ${
                   isDark ? "text-gray-400" : "text-gray-500"
                 }`}>
                   Start by asking for blog ideas, marketing copy, or a piece of code.
@@ -192,7 +229,7 @@ export default function Home() {
             </div>
           )}
 
-          <div className="max-w-4xl mx-auto space-y-6">
+          <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6">
             {messages.map((m, idx) => (
               <div
                 key={idx}
@@ -201,7 +238,7 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`relative max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap transition-colors duration-200 ${
+                  className={`relative max-w-[90%] lg:max-w-[85%] rounded-2xl px-3 lg:px-4 py-2.5 lg:py-3 text-sm leading-relaxed whitespace-pre-wrap transition-colors duration-200 ${
                     m.role === "user"
                       ? "bg-blue-600 text-white"
                       : isDark
@@ -235,12 +272,11 @@ export default function Home() {
               </div>
             )}
 
-            {/* Copy All Button - Shows when chat is complete */}
             {messages.length > 0 && !isLoading && (
               <div className="flex justify-center pt-4">
                 <button
                   onClick={handleCopyAll}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-3 lg:px-4 py-2 rounded-lg text-xs lg:text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
                     isDark
                       ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
                       : "bg-gray-100 hover:bg-gray-200 text-gray-700"
@@ -258,10 +294,11 @@ export default function Home() {
         </div>
 
         {/* Input Area - Fixed to Bottom */}
-        <div className={`fixed bottom-0 left-64 right-0 border-t transition-colors duration-200 z-10 ${
+        <div className={`fixed bottom-0 left-0 right-0 lg:left-0 border-t transition-colors duration-200 z-10 ${
           isDark ? "bg-[#171717] border-gray-800" : "bg-white border-gray-200"
         }`}>
-          <div className="max-w-4xl mx-auto px-6 py-4 space-y-3">
+         
+          <div className="max-w-4xl mx-auto px-4 lg:px-6 py-3 lg:py-4 space-y-2 lg:space-y-3">
             {error && (
               <div className={`text-xs rounded-lg px-3 py-2 transition-colors duration-200 ${
                 isDark
@@ -281,30 +318,24 @@ export default function Home() {
               </div>
             )}
             <div className="flex items-center gap-2">
-   
-
-              {/* Input Box */}
               <div className="flex-1 relative">
                 <textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask anything"
-                  className={`w-full min-h-[52px] max-h-40 rounded-2xl border px-4 py-3 pr-32 text-sm outline-none resize-none transition-colors duration-200 ${
+                  className={`w-full min-h-[48px] lg:min-h-[52px] max-h-32 lg:max-h-40 rounded-2xl border px-3 lg:px-4 py-2.5 lg:py-3 pr-12 text-sm outline-none resize-none transition-colors duration-200 ${
                     isDark
                       ? "border-gray-700 bg-[#1a1a1a] text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-900/50"
                       : "border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   }`}
                 />
-                
-           
               </div>
 
-              {/* Far Right Sound Wave Button */}
               <button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed ${
+                className={`w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed ${
                   isDark
                     ? "bg-white text-white hover:bg-gray-900"
                     : "bg-black text-white hover:bg-gray-900"
@@ -314,7 +345,7 @@ export default function Home() {
                 {isLoading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
-                  <IoSend color={isDark ? "black" : "white"} />
+                  <IoSend color={isDark ? "black" : "white"} size={18} />
                 )}
               </button>
             </div>
