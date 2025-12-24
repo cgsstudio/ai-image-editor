@@ -109,7 +109,7 @@ export default function Home() {
             <span className={`text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-200 ${
               isDark ? "text-[#fff]" : "text-gray-600"
             }`}>
-              Chameleo Code Generator
+              Chameleo Code & Content Generator
             </span>
             <h1 className={`text-xl md:text-2xl font-bold mt-1 transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
