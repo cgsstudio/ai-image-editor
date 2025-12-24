@@ -162,7 +162,7 @@ export default function Home() {
                 className="object-contain"
               />
             </div>
-            <span className={`font-semibold text-sm transition-colors duration-200 ${
+            <span className={`font-semibold text-lg md:text-2xl transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
               ChamAI 
@@ -199,7 +199,7 @@ export default function Home() {
               <IoMenu size={24} />
             </button>
             
-            <h1 className={`text-sm lg:text-lg font-semibold transition-colors duration-200 ${
+            <h1 className={`text-sm md:text-2xl font-semibold transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
               Transform Ideas into Content or Code with AI 
