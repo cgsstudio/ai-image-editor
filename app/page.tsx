@@ -165,7 +165,7 @@ export default function Home() {
             <span className={`font-semibold text-lg md:text-2xl transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
-              ChamAI 
+              Chameleo AI 
             </span>
           </div>
           <div>
@@ -177,7 +177,7 @@ export default function Home() {
           </div>
               <div className="mt-auto pt-8 text-center border-t border-gray-100">
                 <p className="text-xs text-gray-400 mb-1">© Copyright 2025</p>
-                <p className="text-xs text-gray-400">Powered by <a href="https://chameleogfxstudio.com/" className="hover:text-[#ed1d24]">chemeloeGFXstudio</a></p>
+                <p className="text-xs text-gray-400">Powered by <a href="https://chameleogfxstudio.com/" className="hover:text-[#ed1d24]">Chameleo GFX Studio </a></p>
             </div>
         </div>
       </aside>
