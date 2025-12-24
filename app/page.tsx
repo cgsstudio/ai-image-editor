@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { IoSend } from "react-icons/io5";
+import Image from "next/image";
+import Logo from "../assest/images/logo-2.svg";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -95,34 +98,72 @@ export default function Home() {
     }
   };
 
+  const handleCopyAll = async () => {
+    if (messages.length === 0) return;
+    
+    try {
+      const fullChat = messages
+        .map((m) => {
+          const role = m.role === "user" ? "You" : "AI Assistant";
+          return `${role}:\n${m.content}\n`;
+        })
+        .join("\n---\n\n");
+      
+      await navigator.clipboard.writeText(fullChat);
+      setCopyError(null);
+    } catch (err: any) {
+      console.error("Copy failed", err);
+      setCopyError("Copy failed. Try again.");
+    }
+  };
+
   return (
-    <main className={`min-h-screen flex items-center justify-center p-4 lg:p-8 transition-colors duration-200 ${
-      isDark ? "bg-[#000000]" : "bg-gray-50"
+    <main className={`min-h-screen flex transition-colors duration-200 ${
+      isDark ? "bg-[#000000]" : "bg-white"
     }`}>
-      <div className={`w-full max-w-5xl rounded-[2.5rem] shadow-xl overflow-hidden min-h-[75vh] flex flex-col transition-colors duration-200 ${
-        isDark ? "bg-[#262626]" : "bg-white"
+      {/* Left Sidebar */}
+      <aside className={`w-64 flex-shrink-0 flex flex-col border-r transition-colors duration-200 sticky top-0 h-screen ${
+        isDark ? "bg-[#171717] border-gray-800" : "bg-gray-50 border-gray-200"
       }`}>
-        <header className={`w-full py-6 px-8 flex items-center justify-between border-b transition-colors duration-200 ${
-          isDark ? "border-gray-700" : "border-gray-200"
-        }`}>
-          <div className="flex flex-col">
-            <span className={`text-xs font-semibold uppercase tracking-[0.15em] transition-colors duration-200 ${
-              isDark ? "text-[#fff]" : "text-gray-600"
-            }`}>
-              Chameleo Code & Content Generator
-            </span>
-            <h1 className={`text-xl md:text-2xl font-bold mt-1 transition-colors duration-200 ${
+        <div className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 flex items-center justify-center">
+              <Image
+                src={Logo}
+                alt="Chameleo Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
+            </div>
+            <span className={`font-semibold text-sm transition-colors duration-200 ${
               isDark ? "text-white" : "text-gray-900"
             }`}>
-              Chat with AI & generate content or code
-            </h1>
+              Chameleo AI Assistant
+            </span>
           </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area - Full Width */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Chat Area Header */}
+
+                  
+        <header className={`sticky top-0 z-30 w-full py-4 px-6 border-b flex items-center justify-between transition-colors duration-200 ${
+          isDark ? "bg-[#171717] border-gray-800" : "bg-white border-gray-200"
+        }`}>
+          <h1 className={`text-lg font-semibold transition-colors duration-200 ${
+            isDark ? "text-white" : "text-gray-900"
+          }`}>
+            Chat with AI & Generate Content or Code
+          </h1>
           <button
             onClick={toggleTheme}
-            className={`p-2 rounded-xl transition-all duration-200 hover:scale-105 ${
+            className={`p-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
               isDark 
-                ? "bg-gray-700 hover:bg-gray-600 text-yellow-400" 
-                : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                ? "bg-gray-800 hover:bg-gray-700 text-gray-300" 
+                : "bg-gray-100 hover:bg-gray-200 text-gray-700"
             }`}
             title={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
@@ -130,19 +171,28 @@ export default function Home() {
           </button>
         </header>
 
-        <div className="flex-1 flex flex-col px-6 pb-6 pt-4">
-          <div className={`flex-1 overflow-y-auto rounded-2xl p-4 space-y-4 transition-colors duration-200 ${
-            isDark ? "bg-[#1a1a1a]" : "bg-[#F5F5F7]"
-          }`}>
-            {messages.length === 0 && (
-              <div className={`text-center text-sm mt-10 transition-colors duration-200 ${
-                isDark ? "text-gray-500" : "text-gray-400"
-              }`}>
-                Start by asking for blog ideas, marketing copy, or a piece of
-                code. The AI will respond here.
+        {/* Messages Area - Scrollable */}
+        <div className={`flex-1 overflow-y-auto px-6 py-8 pb-32 transition-colors duration-200 ${
+          isDark ? "bg-[#0f0f0f]" : "bg-white"
+        }`}>
+          {messages.length === 0 && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <h2 className={`text-2xl font-bold mb-2 transition-colors duration-200 ${
+                  isDark ? "text-white" : "text-gray-900"
+                }`}>
+                  Where should we begin?
+                </h2>
+                <p className={`text-sm transition-colors duration-200 ${
+                  isDark ? "text-gray-400" : "text-gray-500"
+                }`}>
+                  Start by asking for blog ideas, marketing copy, or a piece of code.
+                </p>
               </div>
-            )}
+            </div>
+          )}
 
+          <div className="max-w-4xl mx-auto space-y-6">
             {messages.map((m, idx) => (
               <div
                 key={idx}
@@ -151,18 +201,18 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`relative max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap transition-colors duration-200 ${
+                  className={`relative max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap transition-colors duration-200 ${
                     m.role === "user"
                       ? "bg-blue-600 text-white"
                       : isDark
                       ? "bg-[#2a2a2a] text-gray-100 shadow-sm border border-gray-700"
-                      : "bg-white text-gray-900 shadow-sm border border-gray-100"
+                      : "bg-gray-100 text-gray-900 shadow-sm border border-gray-200"
                   }`}
                 >
                   {m.role === "assistant" && (
                     <button
                       onClick={() => handleCopy(m.content)}
-                      className={`absolute top-0 right-2 text-xs transition-colors duration-200 ${
+                      className={`absolute top-2 right-2 text-xs transition-colors duration-200 ${
                         isDark 
                           ? "text-gray-400 hover:text-gray-200" 
                           : "text-gray-500 hover:text-gray-800"
@@ -178,17 +228,42 @@ export default function Home() {
             ))}
 
             {isLoading && (
-              <div className={`text-xs animate-pulse transition-colors duration-200 ${
+              <div className={`text-sm animate-pulse transition-colors duration-200 ${
                 isDark ? "text-gray-400" : "text-gray-500"
               }`}>
                 AI is thinking…
               </div>
             )}
-          </div>
 
-          <div className="mt-4 space-y-2">
+            {/* Copy All Button - Shows when chat is complete */}
+            {messages.length > 0 && !isLoading && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={handleCopyAll}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    isDark
+                      ? "bg-gray-800 hover:bg-gray-700 text-gray-300"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                  title="Copy entire chat"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Copy Chat
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Input Area - Fixed to Bottom */}
+        <div className={`fixed bottom-0 left-64 right-0 border-t transition-colors duration-200 z-10 ${
+          isDark ? "bg-[#171717] border-gray-800" : "bg-white border-gray-200"
+        }`}>
+          <div className="max-w-4xl mx-auto px-6 py-4 space-y-3">
             {error && (
-              <div className={`text-xs rounded-xl px-3 py-2 transition-colors duration-200 ${
+              <div className={`text-xs rounded-lg px-3 py-2 transition-colors duration-200 ${
                 isDark
                   ? "text-red-400 bg-red-900/30 border border-red-800"
                   : "text-red-500 bg-red-50 border border-red-100"
@@ -197,7 +272,7 @@ export default function Home() {
               </div>
             )}
             {copyError && (
-              <div className={`text-xs rounded-xl px-3 py-2 transition-colors duration-200 ${
+              <div className={`text-xs rounded-lg px-3 py-2 transition-colors duration-200 ${
                 isDark
                   ? "text-red-400 bg-red-900/30 border border-red-800"
                   : "text-red-500 bg-red-50 border border-red-100"
@@ -205,36 +280,44 @@ export default function Home() {
                 {copyError}
               </div>
             )}
-            <div className="flex items-end gap-3">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Ask anything, generate content, or request code…"
-                className={`flex-1 min-h-[52px] max-h-40 rounded-2xl border px-4 py-3 text-sm outline-none resize-y transition-colors duration-200 ${
-                  isDark
-                    ? "border-gray-700 bg-[#1a1a1a] text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-900/50"
-                    : "border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                }`}
-              />
+            <div className="flex items-center gap-2">
+   
+
+              {/* Input Box */}
+              <div className="flex-1 relative">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask anything"
+                  className={`w-full min-h-[52px] max-h-40 rounded-2xl border px-4 py-3 pr-32 text-sm outline-none resize-none transition-colors duration-200 ${
+                    isDark
+                      ? "border-gray-700 bg-[#1a1a1a] text-gray-100 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-900/50"
+                      : "border-gray-300 bg-white text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  }`}
+                />
+                
+           
+              </div>
+
+              {/* Far Right Sound Wave Button */}
               <button
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                className={`h-[52px] px-5 rounded-2xl text-sm font-semibold shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200 ${
+                className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed ${
                   isDark
-                    ? "bg-gray-700 text-white hover:bg-gray-600"
-                    : "bg-gray-900 text-white hover:bg-gray-800"
+                    ? "bg-white text-white hover:bg-gray-900"
+                    : "bg-black text-white hover:bg-gray-900"
                 }`}
+                title="Send"
               >
-                {isLoading ? "Sending…" : "Send"}
+                {isLoading ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <IoSend color={isDark ? "black" : "white"} />
+                )}
               </button>
             </div>
-            <p className={`text-[11px] transition-colors duration-200 ${
-              isDark ? "text-gray-500" : "text-gray-400"
-            }`}>
-              Tip: Ask for &quot;Next.js API route with TypeScript&quot;, &quot;SEO‑optimized
-              blog intro&quot;, or &quot;explain this piece of code&quot;.
-            </p>
           </div>
         </div>
       </div>
